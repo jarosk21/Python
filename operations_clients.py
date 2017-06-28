@@ -2,6 +2,14 @@
 
 class ClientOps:
     def new_client (self):
+        self.client_type_choice()
+        self.client_type = int(input('Wprowadź id rodzaju\n'))
+        if (self.client_type == 1 or self.client_type == 2):
+            self.new_natural_person ()
+        else:
+            self.new_company ()
+            
+    def client_type_choice(self):
         print ('Wybierz rodzaj klienta')
         self.sql_types = 'SELECT * FROM rodz_kl'
         self.cursor.execute(self.sql_types)
@@ -10,12 +18,7 @@ class ClientOps:
         for row in self.results:
             self.id_r = row[0]
             self.cl_type = row[1]
-            print ('%15s%15s' % (self.id_r, self.cl_type))
-        self.client_type = int(input('Wprowadź id rodzaju\n'))
-        if (self.client_type == 1 or self.client_type == 2):
-            self.new_natural_person ()
-        else:
-            self.new_company ()
+            print ('%15s%15s' % (self.id_r, self.cl_type))        
                 
     def new_adress(self):
         self.cursor.execute('SELECT id_k from klienci order by id_k desc limit 1')
@@ -104,3 +107,45 @@ class ClientOps:
         else:
             print('anulowano')
         self.wybor()      
+        
+    def client_mod(self):
+        self.client_type_choice()
+        self.client_type = int(input('Wprowadź id rodzaju\n'))
+        if (self.client_type == 1 or self.client_type == 2):
+            self.client_read()
+            self.lp = input('podaj id klienta do edycji\n')
+            print('Co chcesz zmodyfikować?\n')
+            self.choice = input('1 - dane personalne, 2 - rodzaj klienta')
+            if (self.choice == 1):
+                self.sql = 'UPDATE klienci set imie = %s, nazwisko = %s, pesel = %s where id_k = %s'
+                self.cl_name = input ('podaj imię klienta\n')
+                self.cl_lastname = input ('podaj nazwisko klienta\n')
+                self.pesel = input ('podaj PESEL klienta\n')
+                self.cursor.execute(self.sql,(self.cl_name, self.cl_lastname, self.pesel, self.lp))
+                self.conn.commit()
+            else:
+                self.client_type_choice()
+                self.rodz = input('podaj nowy rodzaj\n')
+                self.sql = 'UPDATE klienci set kl_id_r = %s where id_k = %s'
+                self.cursor.execute(self.sql,(self.rodz, self.lp))
+                self.conn.commit()
+                
+        else:
+            self.client_read()
+            self.lp = input('podaj id klienta do edycji\n')            
+            print('Co chcesz zmodyfikować?\n')
+            self.choice = input('1 - dane klienta, 2 - rodzaj klienta')
+            self.client_read()
+            if (self.choice == 1):
+                self.lp = input('podaj id klienta do edycji')
+                self.sql = 'UPDATE klienci set imie = %s, nazwisko = %s, pesel = %s where id_k = %s'
+                self.cl_name = input ('podaj imię klienta\n')
+                self.cl_lastname = input ('podaj nazwisko klienta\n')
+                self.pesel = input ('podaj PESEL klienta\n')
+                self.cursor.execute(self.sql,(self.cl_name, self.cl_lastname, self.pesel, self.lp))
+            else:
+                self.client_type_choice()
+                self.rodz = input('podaj nowy rodzaj\n')
+                self.sql = 'UPDATE klienci set kl_id_r = %s where id_k = %s'
+                self.cursor.execute(self.sql,(self.rodz, self.lp))
+                self.conn.commit()                
