@@ -5,13 +5,14 @@ from operations_clients import *
 from operations_pay_inv import *
 
 class MenuDB(ClientOps, Payments_invoices, CasesOps):
+    #login - database
     def __init__(self):
         print('Logowanie do bazy danych')
         self.uname = input('podaj login ')
         self.upass = input('podaj haslo ')        
         self.conn = pymysql.connect ('localhost', self.uname, self.upass, 'dbKancelaria1')
         self.logowanie()
-        #login 
+        #login - user
     def logowanie(self):
         print ('Logowanie użytkownika')
         self.sqlp = 'Select * from Users where user_name=%s and pass=%s'

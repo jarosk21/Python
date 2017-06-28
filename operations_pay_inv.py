@@ -97,7 +97,7 @@ class Payments_invoices:
     def invoice_del(self):
         self.lp = input('podaj id faktury do usuniecia')
         self.sql4 = 'delete from faktury where id_f=%s'
-        self.dec = input('Czy na pewno chcesz usunąć? t/n')
+        self.dec = str.lower(input('Czy na pewno chcesz usunąć? t/n'))
         if (self.dec == 't'):
             self.cursor.execute(self.sql4,(self.lp))
             print ('usunięto')
@@ -109,7 +109,7 @@ class Payments_invoices:
     def payments_del(self):
         self.lp = input('podaj id płatności do usuniecia')
         self.sql4 = 'delete from platnosci where id_p=%s'
-        self.dec = input('Czy na pewno chcesz usunąć? t/n')
+        self.dec = str.lower(input('Czy na pewno chcesz usunąć? t/n'))
         if (self.dec == 't'):
             self.cursor.execute(self.sql4,(self.lp))
             print ('usunięto')
@@ -117,3 +117,24 @@ class Payments_invoices:
         else:
             print('anulowano')
         self.wybor()        
+        
+    def payments_mod(self):
+        self.sql = 'UPDATE platnosci set pl_id_f = %s, kwota = %s, data_otrz = %s where id_p = %'
+        self.lp = input('Podaj id płatności do modyfikacji\n')
+        self.new_data = input('Podaj id powiązanej faktury\n')
+        self.new_data1 = input('Podaj kwotę\n')
+        self.new_data2 = input('Podaj datę otrzymania w formacie rrrr-mm-dd\n')
+        print ('Dla płatności o nr id '+self.lp+' wprowadzono nowe dane:\n powiązana faktura - \n'+self.new_data+'\nKwota - \n'+self.new_data1+'\nData otrzymania - '+self.new_data2+'\n')
+        self.cursor.execute(self.sql,(self.new_data, self.new_data1, self.new_data2, self.lp))
+        self.conn.commit()
+        
+    def invoice_mod(self):
+        self.sql = 'UPDATE faktury set nr_f = %s, fv_id_sp = %s, kwota = %s, data_wyst = %s, termin_p = %s where id_f = %s'
+        self.lp = input('Podaj id faktury do modyfikacji\n')
+        self.new_data = input('Wprowadź numer faktury\n')
+        self.new_data1 = input('Wprowadź id powiązanej sprawy\n')
+        self.new_data2 = input('Wprowadź kwotę\n')
+        self.new_data3 = input('Wprowadź datę wystawienia w formacie rrrr-mm-dd\n')
+        self.new_data4 = input('Wprowadź termin płatności\n')
+        self.cursor.execute(self.sql,(self.new_data, self.new_data1, self.new_data2, self.new_data3, self.new_data4, self.lp))
+        self.conn.commit()
